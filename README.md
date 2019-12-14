@@ -1,24 +1,20 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+I found an interesting issue in rails this is what I learned:
 
-Things you may want to cover:
+This does NOT work:
+```ruby
+find_by_sql(<<~SQL)
+    SELECT * FROM users JOIN active_users ON users.id = active_users.user_id
+   SQL
+```
 
-* Ruby version
+This does work: 
+```ruby
+find_by_sql(<<~SQL)
+    SELECT users.* FROM users JOIN active_users ON users.id = active_users.user_id
+   SQL
+```
 
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+The interesting part is the rails DOES return an active record relation from the first query.
+Disappointingly, the retuned model is invalid as it has the wrong id 😱
